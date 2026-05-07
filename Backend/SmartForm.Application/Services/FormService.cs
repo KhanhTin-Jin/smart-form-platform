@@ -28,7 +28,14 @@ namespace SmartForm.Application.Services
                 ? await _unitOfWork.Repository<Form>().GetAsync(f => f.Status == "active")
                 : await _unitOfWork.Repository<Form>().GetAllAsync();
                 
+            var fields = await _unitOfWork.Repository<FormField>().GetAllAsync();
+            
             var sortedForms = forms.OrderBy(f => f.Order).ToList();
+            foreach (var form in sortedForms)
+            {
+                form.Fields = fields.Where(f => f.FormId == form.Id).OrderBy(f => f.Order).ToList();
+            }
+
             var dtos = _mapper.Map<List<FormDto>>(sortedForms);
             return ServiceResult<List<FormDto>>.Success(dtos);
         }
