@@ -166,42 +166,15 @@ namespace SmartForm.Application.Services
 
             var fields = await _unitOfWork.Repository<FormField>().GetAsync(f => f.FormId == formId);
 
-            // Validation Engine
+            // Validation Engine (Extracted to separate module for scalability and testing)
             foreach (var field in fields)
             {
                 var submittedValue = dto.Values.FirstOrDefault(v => v.FormFieldId == field.Id)?.Value;
-
-                if (field.Required && string.IsNullOrWhiteSpace(submittedValue))
+                var errorMsg = SmartForm.Application.Validation.FieldValidationEngine.ValidateField(field, submittedValue);
+                
+                if (errorMsg != null)
                 {
-                    return ServiceResult.Warning(ResultCodeConst.ValidationError, $"Field '{field.Label}' is required.");
-                }
-
-                if (!string.IsNullOrWhiteSpace(submittedValue))
-                {
-                    switch (field.Type.ToLower())
-                    {
-                        case "text":
-                            if (submittedValue.Length > 200)
-                                return ServiceResult.Warning(ResultCodeConst.ValidationError, $"Field '{field.Label}' must not exceed 200 characters.");
-                            break;
-                        case "number":
-                            if (!decimal.TryParse(submittedValue, out decimal num) || num < 0 || num > 100)
-                                return ServiceResult.Warning(ResultCodeConst.ValidationError, $"Field '{field.Label}' must be a number between 0 and 100.");
-                            break;
-                        case "date":
-                            if (!DateTime.TryParse(submittedValue, out DateTime date) || date < DateTime.UtcNow.Date)
-                                return ServiceResult.Warning(ResultCodeConst.ValidationError, $"Field '{field.Label}' must be a valid date and not in the past.");
-                            break;
-                        case "color":
-                            if (!Regex.IsMatch(submittedValue, "^#(?:[0-9a-fA-F]{3}){1,2}$"))
-                                return ServiceResult.Warning(ResultCodeConst.ValidationError, $"Field '{field.Label}' must be a valid HEX color code.");
-                            break;
-                        case "select":
-                            var options = field.Options?.Split(',').Select(o => o.Trim()).ToList() ?? new List<string>();
-                            if (!options.Contains(submittedValue))
-                                return ServiceResult.Warning(ResultCodeConst.ValidationError, $"Field '{field.Label}' must be one of the provided options.");
-                            break;
-                    }
+                    return ServiceResult.Warning(ResultCodeConst.ValidationError, errorMsg);
                 }
             }
 
