@@ -258,37 +258,58 @@ const AdminContainer = () => {
 
   return (
     <div>
-      <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <h2 style={{ fontSize: '2.5rem', margin: '0 0 1rem 0' }}>Admin Workspace</h2>
-        <p style={{ color: 'var(--text-secondary)' }}>Manage forms, fields and view user submissions.</p>
+      <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+        <h2 style={{ fontSize: '3rem', margin: '0 0 1rem 0', background: 'linear-gradient(to right, var(--text-primary), var(--primary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: 800 }}>
+          Admin Workspace
+        </h2>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem' }}>Manage forms, fields and analyze user engagement in real-time.</p>
       </div>
 
-      <div style={{ display: 'flex', gap: '10px', marginBottom: '2rem', justifyContent: 'center' }}>
-        <button onClick={() => setActiveTab('forms')} className={activeTab === 'forms' ? 'btn-primary' : 'btn-secondary'}>Manage Forms</button>
-        <button onClick={() => setActiveTab('submissions')} className={activeTab === 'submissions' ? 'btn-primary' : 'btn-secondary'}>View Submissions</button>
+      <div style={{ display: 'flex', gap: '12px', marginBottom: '3rem', justifyContent: 'center', background: 'rgba(255, 255, 255, 0.5)', padding: '6px', borderRadius: 'var(--radius-full)', width: 'fit-content', margin: '0 auto 3rem auto', border: '1px solid var(--surface-border)', backdropFilter: 'blur(8px)' }}>
+        <button 
+          onClick={() => setActiveTab('forms')} 
+          className={activeTab === 'forms' ? 'btn-primary' : 'btn-secondary'}
+          style={{ borderRadius: 'var(--radius-full)', border: 'none', boxShadow: activeTab === 'forms' ? '0 4px 12px var(--primary-glow)' : 'none' }}
+        >
+          <span style={{ fontSize: '1.1rem' }}>📝</span> Manage Forms
+        </button>
+        <button 
+          onClick={() => setActiveTab('submissions')} 
+          className={activeTab === 'submissions' ? 'btn-primary' : 'btn-secondary'}
+          style={{ borderRadius: 'var(--radius-full)', border: 'none', boxShadow: activeTab === 'submissions' ? '0 4px 12px var(--primary-glow)' : 'none' }}
+        >
+          <span style={{ fontSize: '1.1rem' }}>📊</span> View Submissions
+        </button>
       </div>
 
       {activeTab === 'forms' && (
         <div className="animate-fade-in">
-          <div className="glass-card" style={{ marginBottom: '2rem' }}>
-            <h3 style={{ marginTop: 0 }}>+ Create New Form</h3>
+          <div className="glass-card" style={{ marginBottom: '3rem', border: '2px solid var(--primary-glow)' }}>
+            <h3 style={{ marginTop: 0, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ background: 'var(--primary)', color: 'white', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem' }}>+</span>
+              Create New Form
+            </h3>
             <form onSubmit={handleCreateForm} style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
-              <div style={{ flex: 1, minWidth: '200px' }}>
-                <input className="form-input" placeholder="Title" required value={title} onChange={e => setTitle(e.target.value)} />
+              <div style={{ flex: 1.5, minWidth: '240px' }}>
+                <label className="form-label">Form Title</label>
+                <input className="form-input" placeholder="e.g. Customer Satisfaction Survey" required value={title} onChange={e => setTitle(e.target.value)} />
               </div>
-              <div style={{ flex: 1, minWidth: '200px' }}>
-                <input className="form-input" placeholder="Description" value={description} onChange={e => setDescription(e.target.value)} />
+              <div style={{ flex: 2, minWidth: '300px' }}>
+                <label className="form-label">Description</label>
+                <input className="form-input" placeholder="What is this form about?" value={description} onChange={e => setDescription(e.target.value)} />
               </div>
-              <div>
-                <input className="form-input" type="number" min="1" placeholder="Order" value={formOrder} onChange={e => setFormOrder(Number(e.target.value))} style={{width: '80px'}} title="Order" />
+              <div style={{ width: '100px' }}>
+                <label className="form-label">Order</label>
+                <input className="form-input" type="number" min="1" placeholder="Order" value={formOrder} onChange={e => setFormOrder(Number(e.target.value))} title="Order" />
               </div>
-              <div>
+              <div style={{ width: '120px' }}>
+                <label className="form-label">Status</label>
                 <select className="form-select" value={formStatus} onChange={e => setFormStatus(e.target.value)}>
                   <option value="active">Active</option>
                   <option value="draft">Draft</option>
                 </select>
               </div>
-              <button type="submit" className="btn-primary">Create</button>
+              <button type="submit" className="btn-primary" style={{ padding: '12px 30px' }}>Create Form</button>
             </form>
           </div>
 
@@ -309,25 +330,50 @@ const AdminContainer = () => {
                     <button type="button" onClick={() => setEditingFormId(null)} className="btn-secondary">Cancel</button>
                   </form>
                 ) : (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem' }}>
                     <div>
-                      <h4 style={{ margin: '0 0 5px 0', fontSize: '1.3rem', color: 'var(--primary)' }}>
-                        {form.title} <span style={{fontSize: '0.8rem', padding: '2px 8px', borderRadius: '10px', background: form.status === 'active' ? '#10b981' : '#6b7280', color: 'white'}}>{form.status}</span>
-                      </h4>
-                      <small style={{ color: 'var(--text-secondary)' }}>{form.description} | Order: {form.order}</small>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                        <h4 style={{ margin: 0, fontSize: '1.6rem', color: 'var(--text-primary)', fontWeight: 800 }}>
+                          {form.title}
+                        </h4>
+                        <span style={{ 
+                          fontSize: '0.75rem', 
+                          padding: '4px 12px', 
+                          borderRadius: 'var(--radius-full)', 
+                          background: form.status === 'active' ? 'var(--success)' : 'var(--text-tertiary)', 
+                          color: 'white',
+                          fontWeight: 700,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em'
+                        }}>
+                          {form.status}
+                        </span>
+                      </div>
+                      <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '1rem' }}>
+                        {form.description} <span style={{ color: 'var(--text-tertiary)', margin: '0 8px' }}>&bull;</span> 
+                        <span style={{ fontWeight: 600 }}>Order: {form.order}</span>
+                      </p>
                     </div>
-                    <div style={{ display: 'flex', gap: '10px' }}>
-                      <button onClick={() => openEditForm(form)} style={{ background: 'var(--warning)', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '5px', cursor: 'pointer' }}>Edit</button>
-                      <button onClick={() => handleDeleteForm(form.id)} style={{ background: 'var(--danger)', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '5px', cursor: 'pointer' }}>Delete</button>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button onClick={() => openEditForm(form)} className="btn-secondary" style={{ padding: '8px 16px' }}>
+                        <span>✏️</span> Edit
+                      </button>
+                      <button onClick={() => handleDeleteForm(form.id)} className="btn-secondary" style={{ padding: '8px 16px', color: 'var(--danger)', borderColor: 'rgba(239, 68, 68, 0.2)' }}>
+                        <span>🗑️</span> Delete
+                      </button>
                     </div>
                   </div>
                 )}
                 
                 {/* Fields List */}
-                <div style={{ background: 'rgba(0,0,0,0.02)', padding: '15px', borderRadius: '10px', border: '1px solid var(--surface-border)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-                    <h5 style={{ margin: 0 }}>Fields ({form.fields?.length || 0}):</h5>
-                    <small style={{ color: 'var(--text-secondary)' }}>You can Drag & Drop fields or use arrows to reorder.</small>
+                <div style={{ background: 'rgba(0, 177, 79, 0.02)', padding: '24px', borderRadius: 'var(--radius-md)', border: '1px solid var(--surface-border)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                    <h5 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700 }}>
+                      Questions <span style={{ color: 'var(--text-tertiary)', fontWeight: 400, marginLeft: '4px' }}>({form.fields?.length || 0})</span>
+                    </h5>
+                    <div style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span>🖱️</span> Drag to reorder
+                    </div>
                   </div>
                   
                   <ul style={{ margin: '0 0 20px 0', paddingLeft: '0', listStyle: 'none' }}>
@@ -521,27 +567,50 @@ const AdminContainer = () => {
 
       {/* TAB: SUBMISSIONS */}
       {activeTab === 'submissions' && (
-        <div className="animate-fade-in glass-card">
-          <h3 style={{ marginTop: 0, borderBottom: '1px solid var(--surface-border)', paddingBottom: '1rem' }}>User Submissions</h3>
+        <div className="animate-fade-in glass-card" style={{ padding: '2.5rem' }}>
+          <div style={{ marginBottom: '2.5rem' }}>
+            <h3 style={{ marginTop: 0, fontSize: '1.8rem', fontWeight: 800 }}>User Submissions</h3>
+            <p style={{ color: 'var(--text-secondary)' }}>Review and analyze data collected from your active forms.</p>
+          </div>
+          
           {submissions.length === 0 ? (
-            <p style={{ color: 'var(--text-secondary)' }}>No submissions found yet.</p>
+            <div style={{ textAlign: 'center', padding: '4rem 0' }}>
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🌑</div>
+              <p style={{ color: 'var(--text-tertiary)', fontSize: '1.1rem' }}>No submissions found yet. Share your form to start collecting data!</p>
+            </div>
           ) : (
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
+            <div className="table-container">
+              <table>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid var(--surface-border)', color: 'var(--primary)' }}>
-                    <th style={{ padding: '10px' }}>Time</th>
-                    <th style={{ padding: '10px' }}>Submitter</th>
-                    <th style={{ padding: '10px' }}>Answers (Raw)</th>
+                  <tr>
+                    <th>Time Submitted</th>
+                    <th>Submitter Name</th>
+                    <th>Form Responses</th>
                   </tr>
                 </thead>
                 <tbody>
                   {submissions.map(sub => (
-                    <tr key={sub.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                      <td style={{ padding: '10px', color: 'var(--text-secondary)', width: '150px' }}>{new Date(sub.createdAt).toLocaleString()}</td>
-                      <td style={{ padding: '10px', fontWeight: 'bold', width: '150px' }}>{sub.submitterName}</td>
-                      <td style={{ padding: '10px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                        {sub.values.map(v => <div key={v.id}>👉 {v.value}</div>)}
+                    <tr key={sub.id}>
+                      <td style={{ width: '220px', fontWeight: 500 }}>
+                        {new Date(sub.createdAt).toLocaleString('vi-VN', { 
+                          dateStyle: 'medium', 
+                          timeStyle: 'short' 
+                        })}
+                      </td>
+                      <td style={{ width: '200px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <div style={{ width: '32px', height: '32px', background: 'var(--primary-glow)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.9rem' }}>👤</div>
+                          <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{sub.submitterName}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                          {sub.values.map(v => (
+                            <div key={v.id} style={{ background: 'var(--bg-color)', padding: '6px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--surface-border)', fontSize: '0.85rem' }}>
+                              <span style={{ color: 'var(--primary)', fontWeight: 600 }}>&rarr;</span> {v.value}
+                            </div>
+                          ))}
+                        </div>
                       </td>
                     </tr>
                   ))}

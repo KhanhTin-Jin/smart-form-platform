@@ -5,10 +5,10 @@ import Footer from './Footer';
 
 const MainLayout = ({ children }) => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--bg-color)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--bg-color)', backgroundImage: 'var(--bg-gradient)' }}>
       <Header />
       <Navigation />
-      <main style={{ padding: '2rem 1rem', flex: 1, maxWidth: '1000px', margin: '0 auto', width: '100%' }}>
+      <main style={{ padding: '2rem 1.5rem 6rem 1.5rem', flex: 1, maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
         <div className="animate-fade-in">
           {children}
         </div>
