@@ -1,16 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { formApi } from '../services/ApiService';
-
-// Helper for parsing options robustly
-const parseOptions = (optionsStr) => {
-  if (!optionsStr) return [];
-  try {
-    const parsed = JSON.parse(optionsStr);
-    if (Array.isArray(parsed)) return parsed.map(s => String(s).trim());
-  } catch(e) {}
-  return optionsStr.split(',').map(s => s.trim()).filter(s => s);
-};
+import { formApi } from '../services';
+import { parseOptions } from '../utils';
 
 const FormViewContainer = () => {
   const { id } = useParams();

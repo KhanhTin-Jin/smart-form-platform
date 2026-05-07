@@ -1,15 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { formApi, submissionApi } from '../services/ApiService';
-
-// Helper for parsing options whether it's JSON or comma-separated
-const parseOptions = (optionsStr) => {
-  if (!optionsStr) return [];
-  try {
-    const parsed = JSON.parse(optionsStr);
-    if (Array.isArray(parsed)) return parsed.map(s => String(s).trim());
-  } catch(e) {}
-  return optionsStr.split(',').map(s => s.trim()).filter(s => s);
-};
+import { formApi, submissionApi } from '../services';
+import { parseOptions } from '../utils';
 
 const AdminContainer = () => {
   const [activeTab, setActiveTab] = useState('forms');
