@@ -148,3 +148,58 @@ dotnet test
 ```
 
 Tests bao gồm: Required check, Text max-length, Number range (Theory), Date past validation, Color HEX regex (Theory), Select option matching (hỗ trợ cả CSV và JSON format).
+
+---
+
+## 🗄 Database Schema
+
+```
+Form (1) ──────< FormField (N)
+  │
+  └──────< FormSubmission (N)
+               │
+               └──────< SubmissionValue (N)
+```
+
+| Table | Mô tả |
+|---|---|
+| `Forms` | Thông tin form (title, description, order, status) |
+| `FormFields` | Các trường trong form, FK → Forms |
+| `FormSubmissions` | Bản ghi submit của nhân viên, FK → Forms |
+| `SubmissionValues` | Giá trị từng field trong 1 lần submit, FK → FormSubmissions + FormFields |
+
+> Migration script: `Backend/SmartForm.Infrastructure/Migrations/`
+
+---
+
+## 🧠 Quyết Định Thiết Kế
+
+### 1. Tại sao dùng Clean Architecture?
+Bài test đánh giá khả năng "xây dựng tính năng có thể mở rộng". Clean Architecture đảm bảo việc thêm một loại field mới (ví dụ: `file_upload`) chỉ cần thêm 1 `case` vào `FieldValidationEngine` và 1 handler ở Frontend – không phải chạm vào DB, Controller hay Service.
+
+### 2. Tại sao tách `FieldValidationEngine` thành module riêng?
+Đề bài gợi ý rõ: *"tách logic validate thành một lớp/module riêng thay vì viết thẳng vào controller"*. Module này:
+- **Không phụ thuộc** vào bất kỳ framework nào → dễ viết Unit Test thuần tuý
+- **Single Responsibility**: chỉ làm 1 việc duy nhất – validate 1 field
+- **Dễ mở rộng**: thêm loại field mới chỉ cần thêm `case` mới
+
+### 3. Tại sao dùng `ServiceResult<T>` thay vì throw Exception?
+Để có **unified error response format** trên toàn bộ API. Mọi response đều có cùng cấu trúc JSON:
+```json
+{ "code": "ValidationError", "message": "Field 'Name' is required.", "data": null }
+```
+Frontend chỉ cần xử lý 1 format duy nhất, không cần lo về exception format khác nhau giữa các endpoint.
+
+### 4. Tại sao dùng `PUT /fields/reorder` thay vì N lần `PUT /fields/:fid`?
+Khi người dùng kéo thả để sắp xếp lại 10 fields, cách naive là gửi 10 API riêng lẻ. Cách này gây:
+- N round-trip HTTP không cần thiết
+- Race condition nếu các request về không theo thứ tự
+- Lỗi trùng `order` khi 2 fields hoán đổi vị trí cho nhau
+
+API Bulk Reorder nhận `List<Guid>` (danh sách ID theo thứ tự mới), tính lại `order = index + 1` cho từng field, rồi commit **1 lần duy nhất** qua `UnitOfWork` → atomic, không thể xảy ra lỗi nửa vời.
+
+### 5. Options của Select field lưu dạng gì?
+Lưu dạng **chuỗi CSV** (ví dụ: `Rất hài lòng,Bình thường,Không hài lòng`) trong cột `Options` (text). Lý do:
+- Đơn giản, không cần bảng riêng cho bài test này
+- `FieldValidationEngine` và Frontend đều có hàm `parseOptions` xử lý linh hoạt cả CSV lẫn JSON array để đảm bảo backward compatibility
+
