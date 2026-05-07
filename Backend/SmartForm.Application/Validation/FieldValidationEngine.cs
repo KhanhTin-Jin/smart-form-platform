@@ -13,7 +13,7 @@ namespace SmartForm.Application.Validation
     /// </summary>
     public static class FieldValidationEngine
     {
-        public static string ValidateField(FormField field, string submittedValue)
+        public static string? ValidateField(FormField field, string? submittedValue)
         {
             if (field.Required && string.IsNullOrWhiteSpace(submittedValue))
             {
@@ -51,7 +51,7 @@ namespace SmartForm.Application.Validation
             return null; // Null means valid
         }
 
-        private static List<string> ParseOptions(string optionsStr)
+        private static List<string> ParseOptions(string? optionsStr)
         {
             if (string.IsNullOrWhiteSpace(optionsStr)) return new List<string>();
             try

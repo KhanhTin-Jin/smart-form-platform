@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SmartForm.Infrastructure.Data;
+using SmartForm.Application.Services;
 
 namespace SmartForm.API.Extensions
 {
@@ -15,8 +14,8 @@ namespace SmartForm.API.Extensions
             if (app.Environment.IsDevelopment() && autoMigrate)
             {
                 using var scope = app.Services.CreateScope();
-                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                dbContext.Database.Migrate();
+                var migrator = scope.ServiceProvider.GetRequiredService<IDatabaseMigrator>();
+                migrator.Migrate();
             }
 
             return app;

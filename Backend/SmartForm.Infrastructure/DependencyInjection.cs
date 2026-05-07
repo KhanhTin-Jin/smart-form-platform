@@ -18,6 +18,7 @@ namespace SmartForm.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
+            services.AddScoped<IDatabaseMigrator, DatabaseMigrator>();
 
             return services;
         }
