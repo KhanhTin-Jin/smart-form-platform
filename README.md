@@ -50,12 +50,18 @@ Backend tuân thủ **Clean Architecture** với 4 tầng tách biệt, áp dụ
 
 ### Cách 1: Docker Compose (Khuyến nghị – nhanh nhất)
 
+> **Lưu ý:** Chạy lệnh từ **thư mục gốc của project** (nơi chứa file `docker-compose.yml`), không phải từ `Backend/` hay `Frontend/`.
+
 ```bash
-# Đảm bảo Docker Desktop đang chạy
+# Clone project về (nếu chưa có)
+git clone <repo-url>
+cd TopCV   # hoặc tên thư mục repo của bạn
+
+# Đảm bảo Docker Desktop đang chạy, rồi chạy:
 docker-compose up --build
 ```
 
-Sau khi khởi động:
+Sau khi khởi động (~3-5 phút lần đầu do pull images):
 - **Frontend UI:** http://localhost:3000
 - **Backend API:** http://localhost:5282
 - **Swagger Docs:** http://localhost:5282/swagger
