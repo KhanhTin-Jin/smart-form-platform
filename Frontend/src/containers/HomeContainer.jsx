@@ -39,7 +39,7 @@ const HomeContainer = () => {
         </div>
       ) : (
         <div style={{ display: 'grid', gap: '20px' }}>
-          {forms.map(form => (
+          {forms.sort((a, b) => a.order - b.order).map(form => (
             <div key={form.id} className="glass-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '2rem' }}>
               <div>
                 <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.4rem' }}>{form.title}</h3>
