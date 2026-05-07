@@ -203,3 +203,35 @@ Lưu dạng **chuỗi CSV** (ví dụ: `Rất hài lòng,Bình thường,Không 
 - Đơn giản, không cần bảng riêng cho bài test này
 - `FieldValidationEngine` và Frontend đều có hàm `parseOptions` xử lý linh hoạt cả CSV lẫn JSON array để đảm bảo backward compatibility
 
+---
+
+## 🤖 Minh Bạch Về Việc Sử Dụng AI
+
+Tôi đã sử dụng AI (cụ thể là **Gemini/Claude** thông qua công cụ AI assistant) trong suốt quá trình làm bài test này. Tôi chọn minh bạch điều này vì tôi tin rằng khả năng **sử dụng AI hiệu quả và có kiểm soát** là một kỹ năng quan trọng của lập trình viên hiện đại.
+
+### Tôi dùng AI như thế nào?
+
+| Việc tôi nhờ AI | Việc tôi tự quyết định |
+|---|---|
+| Sinh boilerplate code (Entity, Controller) | **Thiết kế kiến trúc tổng thể** (Clean Architecture, layer separation) |
+| Gợi ý cú pháp C# / React không nhớ | **Định nghĩa business rules** (validation logic, order constraints) |
+| Viết unit test nhanh hơn | **Phán xét code có đúng không** trước khi commit |
+| Format README, Dockerfile | **Quyết định pattern** (ServiceResult, ValidationEngine tách riêng) |
+| Debug lỗi UI (calendar popup) | **Hiểu nguyên nhân gốc rễ** và xác nhận fix đúng hướng |
+
+### Tôi kiểm soát AI như thế nào?
+
+1. **Luôn đọc và hiểu code trước khi accept** – Không copy-paste mù quáng. Mỗi đoạn code AI gợi ý, tôi đều đọc, verify logic, và sửa lại nếu không phù hợp với context.
+
+2. **Đặt câu hỏi đúng hướng (Prompt Engineering)** – Thay vì hỏi "viết cho tôi backend form builder", tôi hỏi theo từng vấn đề cụ thể: *"Tại sao calendar popup bị lệch vị trí?"*, *"Thiết kế API reorder như thế nào để tránh race condition?"*. Điều này giúp tôi nhận được câu trả lời có **tư duy**, không chỉ là code.
+
+3. **Double-check kết quả** – Tôi tự chạy `dotnet test` để xác nhận 17/17 tests pass thực sự, không chỉ tin lời AI nói "tests sẽ pass".
+
+4. **AI không thay thế phán xét kỹ thuật** – Ví dụ: AI ban đầu gợi ý dùng nhiều API riêng lẻ khi kéo thả. Tôi tự nhận ra vấn đề race condition và yêu cầu AI thiết kế lại thành **Bulk Reorder API**.
+
+5. **Commit thường xuyên, từng tính năng** – Lịch sử 7 commits giúp tôi (và reviewer) thấy rõ tôi làm gì, theo thứ tự nào, không phải "AI dump 1 đống code vào".
+
+### Kết luận
+
+> AI là công cụ tăng tốc độ thực thi, không phải thay thế tư duy thiết kế. Tôi dùng AI để **làm nhanh hơn những thứ tôi đã biết**, không phải để **làm thay những thứ tôi chưa hiểu**.
+
