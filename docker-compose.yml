@@ -26,6 +26,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5282
+      - AUTO_MIGRATE=true
+      - AUTO_SEED=true
       - ConnectionStrings__DefaultConnection=Host=postgres;Database=SmartFormDb;Username=postgres;Password=postgres
     ports:
       - "5282:5282"

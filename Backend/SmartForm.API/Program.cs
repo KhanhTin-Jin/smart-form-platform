@@ -19,6 +19,9 @@ builder.Services.AddCorsPolicy();
 
 var app = builder.Build();
 
+app.MigrateDatabaseIfEnabled();
+app.SeedDatabaseIfEnabled();
+
 app.UseCorsPolicy();
 
 // Configure the HTTP request pipeline.
