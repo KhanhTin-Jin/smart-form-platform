@@ -21,6 +21,7 @@ export const formApi = {
   addField: (formId, data) => ApiService.post(`/forms/${formId}/fields`, data),
   updateField: (formId, fieldId, data) => ApiService.put(`/forms/${formId}/fields/${fieldId}`, data),
   deleteField: (formId, fieldId) => ApiService.delete(`/forms/${formId}/fields/${fieldId}`),
+  reorderFields: (formId, fieldIds) => ApiService.put(`/forms/${formId}/fields/reorder`, fieldIds),
 };
 
 export const submissionApi = {

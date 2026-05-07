@@ -16,6 +16,7 @@ namespace SmartForm.Application.Services
         Task<ServiceResult<FormFieldDto>> AddFieldToFormAsync(Guid formId, CreateFormFieldDto dto);
         Task<ServiceResult<FormFieldDto>> UpdateFormFieldAsync(Guid formId, Guid fieldId, UpdateFormFieldDto dto);
         Task<ServiceResult> DeleteFormFieldAsync(Guid formId, Guid fieldId);
+        Task<ServiceResult> ReorderFieldsAsync(Guid formId, List<Guid> fieldIds);
 
         Task<ServiceResult> SubmitFormAsync(Guid formId, SubmitFormDto dto);
         Task<ServiceResult<List<FormSubmissionDto>>> GetSubmissionsAsync();

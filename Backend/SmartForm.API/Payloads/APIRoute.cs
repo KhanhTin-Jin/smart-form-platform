@@ -16,6 +16,7 @@ namespace SmartForm.API.Payloads
             public const string AddField = Base + "/forms/{id}/fields";
             public const string UpdateField = Base + "/forms/{id}/fields/{fid}";
             public const string DeleteField = Base + "/forms/{id}/fields/{fid}";
+            public const string ReorderFields = Base + "/forms/{id}/fields/reorder";
 
             public const string Submit = Base + "/forms/{id}/submit";
         }

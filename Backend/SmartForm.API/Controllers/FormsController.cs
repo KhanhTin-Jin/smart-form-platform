@@ -81,6 +81,13 @@ namespace SmartForm.API.Controllers
             return this.ToIActionResult(result);
         }
 
+        [HttpPut(APIRoute.Forms.ReorderFields)]
+        public async Task<IActionResult> ReorderFields(Guid id, [FromBody] System.Collections.Generic.List<Guid> fieldIds)
+        {
+            var result = await _formService.ReorderFieldsAsync(id, fieldIds);
+            return this.ToIActionResult(result);
+        }
+
         [HttpPost(APIRoute.Forms.Submit)]
         public async Task<IActionResult> SubmitForm(Guid id, [FromBody] SubmitFormRequest req)
         {

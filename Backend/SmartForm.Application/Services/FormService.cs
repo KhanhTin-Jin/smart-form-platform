@@ -53,6 +53,8 @@ namespace SmartForm.Application.Services
 
         public async Task<ServiceResult<FormDto>> CreateFormAsync(CreateFormDto dto)
         {
+            if (dto.Order < 1) return ServiceResult<FormDto>.Warning(ResultCodeConst.ValidationError, "Order cannot be negative or zero.");
+            
             var form = _mapper.Map<Form>(dto);
             await _unitOfWork.Repository<Form>().AddAsync(form);
             await _unitOfWork.CompleteAsync();
@@ -62,6 +64,8 @@ namespace SmartForm.Application.Services
 
         public async Task<ServiceResult<FormDto>> UpdateFormAsync(Guid id, UpdateFormDto dto)
         {
+            if (dto.Order < 1) return ServiceResult<FormDto>.Warning(ResultCodeConst.ValidationError, "Order cannot be negative or zero.");
+            
             var form = await _unitOfWork.Repository<Form>().GetByIdAsync(id);
             if (form == null) return ServiceResult<FormDto>.Warning(ResultCodeConst.FormNotFound, "Form not found");
 
@@ -87,6 +91,11 @@ namespace SmartForm.Application.Services
 
         public async Task<ServiceResult<FormFieldDto>> AddFieldToFormAsync(Guid formId, CreateFormFieldDto dto)
         {
+            if (dto.Order < 1) return ServiceResult<FormFieldDto>.Warning(ResultCodeConst.ValidationError, "Order cannot be negative or zero.");
+            
+            var existingField = await _unitOfWork.Repository<FormField>().FirstOrDefaultAsync(f => f.FormId == formId && f.Order == dto.Order);
+            if (existingField != null) return ServiceResult<FormFieldDto>.Warning(ResultCodeConst.ValidationError, "Order value is already used by another field.");
+
             var form = await _unitOfWork.Repository<Form>().GetByIdAsync(formId);
             if (form == null) return ServiceResult<FormFieldDto>.Warning(ResultCodeConst.FormNotFound, "Form not found");
 
@@ -101,6 +110,11 @@ namespace SmartForm.Application.Services
 
         public async Task<ServiceResult<FormFieldDto>> UpdateFormFieldAsync(Guid formId, Guid fieldId, UpdateFormFieldDto dto)
         {
+            if (dto.Order < 1) return ServiceResult<FormFieldDto>.Warning(ResultCodeConst.ValidationError, "Order cannot be negative or zero.");
+            
+            var existingField = await _unitOfWork.Repository<FormField>().FirstOrDefaultAsync(f => f.FormId == formId && f.Order == dto.Order && f.Id != fieldId);
+            if (existingField != null) return ServiceResult<FormFieldDto>.Warning(ResultCodeConst.ValidationError, "Order value is already used by another field.");
+
             var field = await _unitOfWork.Repository<FormField>().FirstOrDefaultAsync(f => f.Id == fieldId && f.FormId == formId);
             if (field == null) return ServiceResult<FormFieldDto>.Warning(ResultCodeConst.FieldNotFound, "Field not found");
 
@@ -121,6 +135,27 @@ namespace SmartForm.Application.Services
             _unitOfWork.Repository<FormField>().Delete(field);
             await _unitOfWork.CompleteAsync();
 
+            return ServiceResult.Success();
+        }
+
+        public async Task<ServiceResult> ReorderFieldsAsync(Guid formId, List<Guid> fieldIds)
+        {
+            var form = await _unitOfWork.Repository<Form>().GetByIdAsync(formId);
+            if (form == null) return ServiceResult.Warning(ResultCodeConst.FormNotFound, "Form not found");
+
+            var fields = await _unitOfWork.Repository<FormField>().GetAsync(f => f.FormId == formId);
+            
+            for (int i = 0; i < fieldIds.Count; i++)
+            {
+                var field = fields.FirstOrDefault(f => f.Id == fieldIds[i]);
+                if (field != null)
+                {
+                    field.Order = i + 1;
+                    _unitOfWork.Repository<FormField>().Update(field);
+                }
+            }
+
+            await _unitOfWork.CompleteAsync();
             return ServiceResult.Success();
         }
 

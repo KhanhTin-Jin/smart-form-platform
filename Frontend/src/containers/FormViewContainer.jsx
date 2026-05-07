@@ -2,6 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { formApi } from '../services/ApiService';
 
+// Helper for parsing options robustly
+const parseOptions = (optionsStr) => {
+  if (!optionsStr) return [];
+  try {
+    const parsed = JSON.parse(optionsStr);
+    if (Array.isArray(parsed)) return parsed.map(s => String(s).trim());
+  } catch(e) {}
+  return optionsStr.split(',').map(s => s.trim()).filter(s => s);
+};
+
 const FormViewContainer = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -29,7 +39,7 @@ const FormViewContainer = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Tự động tìm field có chữ "tên" hoặc "name" để làm SubmitterName gửi xuống Backend
+    // Tự động tìm field có chữ "tên" hoặc "name" để làm SubmitterName
     let extractedName = 'Khách (Ẩn danh)';
     for (const field of form.fields) {
       const lowerLabel = field.label.toLowerCase();
@@ -70,7 +80,7 @@ const FormViewContainer = () => {
         {form.fields?.sort((a, b) => a.order - b.order).map(field => (
           <div key={field.id} className="form-group">
             <label className="form-label">
-              {field.label} {field.required && <span style={{color: '#f43f5e'}}>*</span>}
+              {field.label} {field.required && <span style={{color: '#d93025'}}>*</span>}
             </label>
             
             {field.type === 'text' && (
@@ -124,7 +134,7 @@ const FormViewContainer = () => {
                 onChange={(e) => handleAnswerChange(field.id, e.target.value)}
               >
                 <option value="" disabled>Select an option</option>
-                {field.options?.split(',').map(opt => opt.trim()).map((opt, idx) => (
+                {parseOptions(field.options).map((opt, idx) => (
                   <option key={idx} value={opt}>{opt}</option>
                 ))}
               </select>
